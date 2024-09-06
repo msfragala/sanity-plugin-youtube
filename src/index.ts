@@ -24,6 +24,7 @@ export const youtubeInput = definePlugin<{apiKey: string}>((config) => {
             {name: 'description', type: 'string'},
             {name: 'publishedAt', type: 'string'},
             {name: 'thumbnails', type: 'array', of: [{type: 'string'}]},
+            {name: 'aspectRatio', type: 'string'},
           ],
         },
       ],

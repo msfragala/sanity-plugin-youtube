@@ -6,6 +6,11 @@ export type YoutubeVideoData = {
   thumbnails: string[]
 }
 
+function greatestCommonDivisor(a: number, b: number): number {
+  if (b === 0) return a
+  return greatestCommonDivisor(b, a % b)
+}
+
 export function fetchVideoData(id: string, apiKey: string): Promise<YoutubeVideoData | null> {
   const url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${apiKey}`
   return fetch(url)
@@ -16,12 +21,28 @@ export function fetchVideoData(id: string, apiKey: string): Promise<YoutubeVideo
       if (!snippet.title) return null
       if (!snippet.description) return null
       if (!snippet.publishedAt) return null
+
+      let aspectRatio
+
+      // Calculate CSS aspect ratio using video thumbnail dimensions
+      if (snippet.thumbnails?.default?.width && snippet.thumbnails?.default?.height) {
+        const gcd = greatestCommonDivisor(
+          snippet.thumbnails.default.width,
+          snippet.thumbnails.default.height,
+        )
+
+        aspectRatio = `${snippet.thumbnails.default.width / gcd}/${
+          snippet.thumbnails.default.height / gcd
+        }`
+      }
+
       return {
         id,
         title: snippet.title as string,
         description: snippet.description as string,
         publishedAt: snippet.publishedAt as string,
         thumbnails: Object.keys(snippet.thumbnails),
+        aspectRatio,
       }
     })
 }
