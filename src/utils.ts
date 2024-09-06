@@ -14,7 +14,6 @@ export function fetchVideoData(id: string, apiKey: string): Promise<YoutubeVideo
       const snippet = data?.items?.[0]?.snippet
       if (!snippet) return null
       if (!snippet.title) return null
-      if (!snippet.description) return null
       if (!snippet.publishedAt) return null
       return {
         id,
